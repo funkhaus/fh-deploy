@@ -7,8 +7,6 @@ const colors = require('colors')
 const sftp = new Client()
 const deploy = require('./src/deploy').default
 
-//const cwd = __dirname//'/Users/sander/Local\ Sites/vuepress/app/public/wp-content/themes/vuepress'
-
 module.exports.default = config => {
 
     // if config is a path, load the path
