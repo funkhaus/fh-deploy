@@ -21,7 +21,7 @@ module.exports.default = config => {
 
     // Get all files from readable queue
     const queue = flatten(config.queue.map(entry => {
-        return glob.sync(entry, { __dirname })
+        return glob.sync(entry)
     }))
 
     deploy(sftp, config, queue)
