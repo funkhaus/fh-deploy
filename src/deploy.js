@@ -32,8 +32,8 @@ module.exports.default = async function (sftp, config, queue) {
             if( item.includes('/') ){
                 // Strip out the filename from the string
                 const dirPath = item.replace(/[^\/]*$/, '')
-                // create the desired path
-                await sftp.mkdir(path.resolve(config.target, dirPath), true).catch(err => { throw new Error(err) })
+                // create the desired path (adds a trailing slash so we're sure to create a directory)
+                await sftp.mkdir(path.resolve(config.target, dirPath) + '/', true).catch(err => { throw new Error(err) })
             }
 
             // upload the file
