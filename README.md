@@ -34,4 +34,4 @@ __fh-deploy__
 
 http://funkhaus.us
 
-Version: 1.0.0
+Version: 1.0.1
