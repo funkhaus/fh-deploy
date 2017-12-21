@@ -2,13 +2,17 @@
 module.exports.default = async function (sftp, config, queue) {
     const connection = await sftp.connect(config.settings).catch(err => new Error(err))
 
+    // make sure the connection is working
     if( connection instanceof Error ){
         console.log(connection)
         await sftp.end()
         return
     }
-    console.log('in!')
-    sftp.end()
+
+    // make sure the target path is valid
+    const res = await sftp.list(config.target)
+    console.log(res)
+    await sftp.close()
     return
 
     // Each item is a string containing the path
