@@ -11,7 +11,7 @@ module.exports = config => {
 
     // if config is a path, load the path
     if( typeof config == 'string' || config instanceof String ){
-        config = JSON.parse( fs.readFileSync(config) )
+        config = require(config)
     }
 
     if( config.target === undefined ){
