@@ -7,7 +7,7 @@ const colors = require('colors')
 const sftp = new Client()
 const deploy = require('./src/deploy').default
 
-module.exports.default = config => {
+module.exports = config => {
 
     // if config is a path, load the path
     if( typeof config == 'string' || config instanceof String ){

@@ -4,7 +4,7 @@ Deploy files to a server via SFTP. Built as an addition to [Vuepress](https://gi
 
 ## Usage
 ```js
-const deploy = require('fh-deploy').default
+const deploy = require('fh-deploy')
 
 // either:
 deploy({
