@@ -35,11 +35,10 @@ module.exports = () => {
 
         console.log('We highly recommend that you add the new config file to your .gitignore so you don\'t accidentally commit your login credentials.'.yellow)
         const addToGitignore = prompt('Add .deployrc.json to .gitignore now? (y/N): ', 'n')
+        
         if( addToGitignore.toLowerCase() === 'y' ){
-            // check if it already contains .deployrc.json
-                // write to end of .gitignore
-                fs.appendFileSync(gitignorePath, '\n.deployrc.json')
-            }
+            // write to end of .gitignore
+            fs.appendFileSync(gitignorePath, '\n.deployrc.json')
             console.log('.deployrc.json added to .gitignore!'.green)
         }
 
