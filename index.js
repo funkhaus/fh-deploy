@@ -6,8 +6,15 @@ const flatten = require('./src/utils').flatten
 const colors = require('colors')
 const sftp = new Client()
 const deploy = require('./src/deploy').default
+const buildConfig = require('./src/buildConfig')
 
 module.exports = config => {
+
+    // something's wrong with the config, so let's rebuild it
+    if( !fs.existsSync(config) || ( typeof config == 'object' && Object.keys(config).length === 0 ) ){
+        buildConfig()
+        return
+    }
 
     // if config is a path, load the path
     if( typeof config == 'string' || config instanceof String ){
@@ -19,8 +26,21 @@ module.exports = config => {
         return false
     }
 
+    let queue = config.queue
+
+    if( !config.hasOwnProperty('queue') || !config.queue.length ){
+        console.log('No queue in config file. Defaulting to package.json "files"...'.yellow)
+        const package = require(path.resolve('./', 'package.json'))
+        queue = package.files
+    }
+
+    if( !queue || !queue.length ){
+        console.warn('No files in upload queue! No action taken.'.red)
+        return
+    }
+
     // Get all files from readable queue
-    const queue = flatten(config.queue.map(entry => {
+    queue = flatten(queue.map(entry => {
         return glob.sync(entry)
     }))
 

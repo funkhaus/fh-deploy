@@ -3,6 +3,14 @@ Deploy files to a server via SFTP. Built as an addition to [Vuepress](https://gi
 **Note!** Running fh-deploy will automatically overwrite any files of the same name on your server WITHOUT prompting. Assume your files are going to be overwritten as soon as you run fh-deploy!
 
 ## Usage
+Automatic:
+
+```bash
+npm i fh-deploy --save
+fh-deploy # automatically creates a config file with user input
+```
+
+Manual:
 ```js
 const deploy = require('fh-deploy')
 
@@ -14,6 +22,7 @@ deploy({
         username: 'username',
         password: 'password'
     },
+    // If this queue is empty or null, fh-deploy will deploy the files in package.json's "files" array
     queue: [
         'filename.js',
         'all-files-one-level-deep/*.*',
@@ -34,4 +43,4 @@ __fh-deploy__
 
 http://funkhaus.us
 
-Version: 1.0.2
+Version: 1.1.0
