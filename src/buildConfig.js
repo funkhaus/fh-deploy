@@ -30,14 +30,13 @@ module.exports = () => {
 
     const gitignorePath = path.resolve('./', '.gitignore')
 
-    if( fs.existsSync(gitignorePath) ){
+    // .gitignore exists and doesn't include .deployrc.json
+    if( fs.existsSync(gitignorePath && !fs.readFileSync(gitignorePath, { encoding: 'utf8' }).includes('.deployrc.json') ) ){
 
         console.log('We highly recommend that you add the new config file to your .gitignore so you don\'t accidentally commit your login credentials.'.yellow)
         const addToGitignore = prompt('Add .deployrc.json to .gitignore now? (y/N): ', 'n')
         if( addToGitignore.toLowerCase() === 'y' ){
             // check if it already contains .deployrc.json
-            const content = fs.readFileSync(gitignorePath, { encoding: 'utf8' })
-            if( !content.includes('.deployrc.json') ){
                 // write to end of .gitignore
                 fs.appendFileSync(gitignorePath, '\n.deployrc.json')
             }
