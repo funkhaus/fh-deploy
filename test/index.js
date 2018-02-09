@@ -9,22 +9,38 @@ const Net = require('net')
 const srv = Net.createServer(function (client) {
   Protocol(client, client);
 }).listen(8022);
-console.error("sftpd server listening on port 8022");
+console.log("sftpd server listening on port 8022");
 
-// remove existing .deployrc
-if( fs.existsSync(path.resolve('.deployrc.json')) ){
-    console.log('deleting')
-    fs.unlinkSync(path.resolve('.deployrc.json'))
+function removeConfigFile(){
+    // remove existing .deployrc
+    if( fs.existsSync(path.resolve('.deployrc.json')) ){
+        fs.unlinkSync(path.resolve('.deployrc.json'))
+    }
 }
 
 // start the tests
-describe('Test', function() {
+describe('fh-deploy', function() {
 
-    it('should automatically create a config file', function(done) {
-        this.timeout(0)
-        fhDeploy()
-        done(false)
-        //done(fs.existsSync(path.resolve('../deployrc.json')))
+    describe('Automatic config creation', function(){
+        it('automatically creates a config file', function(done) {
+
+            this.timeout(0)
+
+            fhDeploy()
+
+            const configCreated = fs.existsSync(path.resolve(__dirname, '../.deployrc.json'))
+            removeConfigFile()
+
+            if( configCreated ){
+                done()
+            } else {
+                done(new Error())
+            }
+        })
+    })
+
+    describe('Server connection', function(){
+
     })
 
 })
