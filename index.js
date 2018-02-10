@@ -1,12 +1,11 @@
 const path = require('path')
 const fs = require('fs')
-const glob = require('glob')
 const Client = require('ssh2-sftp-client')
-const flatten = require('./src/utils').flatten
 const colors = require('colors')
 const sftp = new Client()
 const deploy = require('./src/deploy').default
 const buildConfig = require('./src/buildConfig')
+const buildQueue = require('./src/buildQueue')
 
 module.exports = config => {
 
@@ -40,9 +39,7 @@ module.exports = config => {
     }
 
     // Get all files from readable queue
-    queue = flatten(queue.map(entry => {
-        return glob.sync(entry)
-    }))
+    queue = buildQueue(queue, config)
 
     deploy(sftp, config, queue)
 }
