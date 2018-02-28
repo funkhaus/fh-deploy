@@ -20,7 +20,7 @@ deploy({
         host: 'your sftp host',
         port: 'your port',
         username: 'username',
-        password: 'password'
+        password: 'password' // optional - if blank, you'll be asked for your password on each deploy
     },
     // If this queue is empty or null, fh-deploy will deploy the files in package.json's "files" array
     queue: [
@@ -43,4 +43,4 @@ __fh-deploy__
 
 http://funkhaus.us
 
-Version: 1.1.2
+Version: 1.1.4

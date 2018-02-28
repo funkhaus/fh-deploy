@@ -9,7 +9,7 @@ module.exports = () => {
     const host = prompt('SFTP host: ')
     const port = prompt('Port ' + '(default: 22)'.gray + ': ', '22')
     const username = prompt('Username: ')
-    const password = prompt('Password: ', { echo: '*' })
+    const password = prompt('Password ' + '(leave blank to enter your password each time you deploy)'.gray + ': ', { echo: '*' })
     const target = prompt('Target directory ' + '(default: /fh-deploy)'.gray + ': ', '/fh-deploy')
 
     const output = {

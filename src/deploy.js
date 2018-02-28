@@ -1,8 +1,16 @@
 const colors = require('colors')
 const path = require('path')
+const prompt = require('prompt-sync')()
 
 // Main function
 module.exports.default = async function (sftp, config, queue) {
+
+    // ask for password if we need it
+    if( !config.settings || !config.settings.password || !config.settings.password.length ) {
+        config.settings = config.settings || {}
+        config.settings.password = prompt('Password: ', { echo: '*' })
+    }
+
     const connection = await sftp.connect(config.settings).catch(err => new Error(err))
 
     // make sure the connection is working
