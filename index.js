@@ -13,7 +13,6 @@ module.exports = config => {
     // something's wrong with the config, so let's rebuild it
     if( !fs.existsSync(config) || ( typeof config == 'object' && Object.keys(config).length === 0 ) ){
         buildConfig()
-        return
     }
 
     // if config is a path, load the path
