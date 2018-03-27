@@ -11,6 +11,7 @@ module.exports = () => {
     const username = prompt('Username: ')
     const password = prompt('Password ' + '(leave blank to enter your password each time you deploy)'.gray + ': ', { echo: '*' })
     const target = prompt('Target directory ' + '(default: /fh-deploy)'.gray + ': ', '/fh-deploy')
+    const lazy = prompt('Lazy upload (Y/n) ' + '(only upload files if they don\'t exist remotely or have changed since last upload. default: y)'.gray + ': ', 'y')
 
     const output = {
         settings: {
@@ -20,7 +21,8 @@ module.exports = () => {
             password
         },
         queue: [],
-        target
+        target,
+        lazy: lazy.toLowerCase() == 'y'
     }
 
     fs.writeFileSync('.deployrc.json', JSON.stringify(output, null, 2))
