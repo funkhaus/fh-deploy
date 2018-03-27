@@ -1,10 +1,8 @@
 const path = require('path')
 const fs = require('fs')
 const glob = require('glob')
-const Client = require('ssh2-sftp-client')
 const flatten = require('./src/utils').flatten
 const colors = require('colors')
-const sftp = new Client()
 const deploy = require('./src/deploy').default
 const buildConfig = require('./src/buildConfig')
 
@@ -43,5 +41,5 @@ module.exports = config => {
         return glob.sync(entry)
     }))
 
-    deploy(sftp, config, queue)
+    deploy(config, queue)
 }

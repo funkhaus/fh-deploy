@@ -28,7 +28,10 @@ deploy({
         'all-files-one-level-deep/*.*',
         'all-files-in-all-subdirectories/**/*.*'
     ],
-    target: '/absolute/path/to/deploy/target'
+    target: '/absolute/path/to/deploy/target',
+
+    // optional properties below
+    lazy: true // if `true`, do not replace a file if it has not been modified since the last upload
 })
 
 // or a path to a JSON file with the above configuration:
@@ -43,4 +46,4 @@ __fh-deploy__
 
 http://funkhaus.us
 
-Version: 1.1.4
+Version: 1.1.5

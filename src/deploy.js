@@ -1,9 +1,16 @@
 const colors = require('colors')
 const path = require('path')
 const prompt = require('prompt-sync')()
+const fs = require('fs')
+const _get = require('lodash/get')
+const Client = require('ssh2-sftp-client')
+const sftp = new Client()
+const sftpStat = require('./sftpStat')
 
 // Main function
-module.exports.default = async function (sftp, config, queue) {
+module.exports.default = async function (config, queue) {
+
+    let hasError = false
 
     // ask for password if we need it
     if( !config.settings || !config.settings.password || !config.settings.password.length ) {
@@ -34,7 +41,6 @@ module.exports.default = async function (sftp, config, queue) {
 
     try {
         for( let item of queue ){
-            console.log(`Uploading ${ item }...`)
 
             // Does the item include a directory? If so, we'll need to create the directory
             if( item.includes('/') ){
@@ -44,6 +50,28 @@ module.exports.default = async function (sftp, config, queue) {
                 await sftp.mkdir(path.resolve(config.target, dirPath) + '/', true).catch(err => { throw new Error(err) })
             }
 
+            // is the deployer going to ignore unchanged files?
+            if( config.lazy ){
+                // Get local file mtime
+                // Default to 1 so that the default value is always higher than the remote (and therefore we upload!)
+                const lastModifiedLocalMs = _get( fs.statSync(path.resolve('./', item)), 'mtimeMs', 1 )
+                const lastModifiedLocal = lastModifiedLocalMs / 1000
+
+                // Get remote file mtime
+                const remoteStats = await sftpStat(sftp, path.resolve(config.target, item)).catch(() => {
+                    // TODO: can put "file no longer exists" action here
+                })
+                const lastModifiedRemote = _get(remoteStats, 'mtime', 0)
+
+                // ignore if we haven't modified locally since we last uploaded
+                if( lastModifiedLocal < lastModifiedRemote ){
+                    console.log(`${ item } unchanged, ignoring...`.yellow)
+                    continue
+                }
+            }
+
+            console.log(`Uploading ${ item }...`.green)
+
             // upload the file
             await sftp.put(path.resolve('./', item), path.resolve(config.target, item))
                 .catch(err => { throw new Error(err) })
@@ -51,9 +79,12 @@ module.exports.default = async function (sftp, config, queue) {
     } catch(err) {
         console.log(err)
         console.log('Error during uploading. Not all files may be uploaded.'.yellow)
+        hasError = true
     }
 
-    console.log('Files uploaded successfully!'.green)
+    if( !hasError ){
+        console.log('Files uploaded successfully!'.green)
+    }
 
     // close the connection
     await sftp.end()
