@@ -32,17 +32,23 @@ module.exports = config => {
             ? config.environments.find(e => e.name == targetEnv)
             : false
 
+        // exit early if specified env not found
+        if (targetEnv && !targetResult) {
+            console.log(
+                `Can\'t find target environment "${targetEnv}"! No action taken.`
+                    .red.bold
+            )
+            return false
+        }
+
         // if there is no env name or if we can't find the env in the deployrc...
         if (targetEnv === undefined || !targetResult) {
-            // ...notify the user if needed...
-            if (targetEnv) {
-                console.log(
-                    `Can\'t find target environment "${targetEnv}"!`.yellow
-                )
-            }
-
             // ...and fall back to the first env
-            console.log('Using default deploy target...')
+            console.log(
+                'Using default deploy target ' +
+                    config.environments[0].name.green +
+                    '...'
+            )
             config = config.environments[0]
         } else {
             // otherwise, get the desired env
