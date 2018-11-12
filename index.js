@@ -9,6 +9,7 @@ const buildConfig = require('./src/buildConfig')
 module.exports = config => {
     // something's wrong with the config, so let's rebuild it and exit
     if (
+        !config ||
         (typeof config == 'string' && !fs.existsSync(config)) ||
         (typeof config == 'object' && Object.keys(config).length === 0)
     ) {
