@@ -8,37 +8,62 @@ module.exports = () => {
         'Deploy config file missing or broken! Creating a new file...'.yellow
     )
 
-    const host = prompt('SFTP host: ')
-    const port = prompt('Port ' + '(default: 22)'.gray + ': ', '22')
-    const username = prompt('Username: ')
-    const password = prompt(
-        'Password ' +
-            '(leave blank to enter your password each time you deploy)'.gray +
-            ': ',
-        { echo: '*' }
-    )
-    const target = prompt(
-        'Target directory ' + '(default: /fh-deploy)'.gray + ': ',
-        '/fh-deploy'
-    )
-    const lazy = prompt(
-        'Lazy upload (Y/n) ' +
-            "(only upload files if they don't exist remotely or have changed since last upload. default: y)"
-                .gray +
-            ': ',
-        'y'
-    )
+    // prep list of environments
+    const environments = []
+    let adding = true
+
+    // start adding loop
+    while (adding) {
+        const name = prompt(
+            'Environment name ' + '(default: "production")'.gray + ': ',
+            'production'
+        )
+        const host = prompt('SFTP host: ')
+        const port = prompt('Port ' + '(default: 22)'.gray + ': ', '22')
+        const username = prompt('Username: ')
+        const password = prompt(
+            'Password ' +
+                '(leave blank to enter your password each time you deploy)'
+                    .gray +
+                ': ',
+            { echo: '*' }
+        )
+        const target = prompt(
+            'Target directory ' + '(default: /fh-deploy)'.gray + ': ',
+            '/fh-deploy'
+        )
+        const lazy = prompt(
+            'Lazy upload (Y/n) ' +
+                "(only upload files if they don't exist remotely or have changed since last upload. default: y)"
+                    .gray +
+                ': ',
+            'y'
+        )
+
+        // add to env list
+        environments.push({
+            name,
+            settings: {
+                host,
+                port,
+                username,
+                password
+            },
+            queue: [],
+            target,
+            lazy: lazy.toLowerCase() == 'y'
+        })
+
+        // more environments?
+        adding =
+            prompt(
+                'Add another target environment (y/N): ',
+                'n'
+            ).toLowerCase() == 'y'
+    }
 
     const output = {
-        settings: {
-            host,
-            port,
-            username,
-            password
-        },
-        queue: [],
-        target,
-        lazy: lazy.toLowerCase() == 'y'
+        environments
     }
 
     fs.writeFileSync('.deployrc.json', JSON.stringify(output, null, 2))

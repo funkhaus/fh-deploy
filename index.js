@@ -22,6 +22,35 @@ module.exports = config => {
         config = require(config)
     }
 
+    // 1.2.0+: find the environment matching the user input
+    if (config.environments) {
+        // get user-requested env
+        // node fh-deploy env-name
+        // 0    1         2
+        const targetEnv = process.argv[2]
+        const targetResult = targetEnv
+            ? config.environments.find(e => e.name == targetEnv)
+            : false
+
+        // if there is no env name or if we can't find the env in the deployrc...
+        if (targetEnv === undefined || !targetResult) {
+            // ...notify the user if needed...
+            if (targetEnv) {
+                console.log(
+                    `Can\'t find target environment "${targetEnv}"!`.yellow
+                )
+            }
+
+            // ...and fall back to the first env
+            console.log('Using default deploy target...')
+            config = config.environments[0]
+        } else {
+            // otherwise, get the desired env
+            console.log(`Using deploy target ` + `${targetEnv}`.green + `...`)
+            config = targetResult
+        }
+    }
+
     if (config.target === undefined) {
         console.warn('No deploy target specified! No action taken.'.red)
         return false
@@ -32,14 +61,13 @@ module.exports = config => {
     if (!config.hasOwnProperty('queue') || !config.queue.length) {
         console.log(
             'No queue in config file. Defaulting to package.json "files"...'
-                .yellow
         )
         const package = require(path.resolve('./', 'package.json'))
         queue = package.files
     }
 
     if (!queue || !queue.length) {
-        console.warn('No files in upload queue! No action taken.'.red)
+        console.warn('No files in upload queue! No action taken.'.red.bold)
         return
     }
 
