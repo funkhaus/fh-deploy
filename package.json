@@ -1,6 +1,6 @@
 {
     "name": "fh-deploy",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "Deploy files to a server via SFTP.",
     "main": "index.js",
     "bin": "./bin/fh-deploy.js",
