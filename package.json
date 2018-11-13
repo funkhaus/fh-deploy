@@ -24,6 +24,6 @@
         "glob": "^7.1.2",
         "lodash": "^4.17.5",
         "prompt-sync": "^4.1.6",
-        "ssh2-sftp-client": "^2.0.1"
+        "ssh2-sftp-client": "2.0.1"
     }
 }
